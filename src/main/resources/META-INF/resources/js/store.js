@@ -26,6 +26,9 @@
         },
         deleteCompleted: async function() {
             await axios.delete(serverUrl);
+        },
+        checkpoint: async function() {
+            await axios.post(serverUrl + "checkpoint");
         }
     };
 

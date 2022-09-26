@@ -111,6 +111,11 @@
                 await this.reload();
             },
 
+            checkpoint: async function() {
+                await todoStorage.checkpoint();
+                await this.reload();
+            },
+
             reload: async function () {
                 const data = await todoStorage.fetch();
                 app.todos = data;

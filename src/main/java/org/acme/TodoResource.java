@@ -81,4 +81,10 @@ public class TodoResource
         return Response.noContent().build();
     }
 
+    @POST
+    @Path("/checkpoint")
+    public Response checkpoint()
+    {
+        return Response.ok().build();
+    }
 }
