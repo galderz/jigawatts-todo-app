@@ -1,5 +1,7 @@
 package org.acme;
 
+import com.redhat.jigawatts.Jigawatts;
+
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 import javax.ws.rs.Consumes;
@@ -14,6 +16,8 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.WebApplicationException;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
+import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.util.List;
 
 @Path("/api")
@@ -85,6 +89,11 @@ public class TodoResource
     @Path("/checkpoint")
     public Response checkpoint()
     {
-        return Response.ok().build();
+        try {
+            Jigawatts.saveTheWorld("./target/tmp"  + System.currentTimeMillis());
+            return Response.ok().build();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
     }
 }
