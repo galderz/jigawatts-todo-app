@@ -13,7 +13,44 @@ HELPER org.acme.JigawattsService
 AT EXIT
 IF true
 DO
-  traceln("Checkpoint entry");
-  checkpoint();
-  traceln("Checkpoint exit");
+  traceln("Checkpoint::entry");
+  traceStack();
+  # checkpoint();
+  traceln("Checkpoint::exit");
+ENDRULE
+
+#RULE checkpoint
+#CLASS io.quarkus.runtime.ApplicationLifecycleManager$ShutdownHookThread
+#METHOD run
+#HELPER org.acme.JigawattsService
+#AT ENTRY
+#IF true
+#DO
+#  traceln("Checkpoint::entry");
+#  traceStack();
+#  # checkpoint();
+#  traceln("Checkpoint::exit");
+#ENDRULE
+
+#RULE restore
+#CLASS io.quarkus.bootstrap.runner.Timing
+#METHOD printStartupTime
+#HELPER org.acme.JigawattsService
+#AT ENTRY
+#IF true
+#DO
+#  traceln("Quarkus entry");
+#  traceStack();
+#ENDRULE
+
+RULE restore
+CLASS io.quarkus.bootstrap.runner.QuarkusEntryPoint
+METHOD main
+HELPER org.acme.JigawattsService
+AT ENTRY
+IF true
+DO
+  traceln("Restore::entry");
+  restore();
+  traceln("Restore::exit");
 ENDRULE

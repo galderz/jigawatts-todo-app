@@ -8,6 +8,7 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
 import java.util.List;
@@ -35,8 +36,12 @@ public class JigawattsService extends Helper
     public void restore()
     {
         try {
-            String lastCheckpoint = Files.lines(Paths.get("./target/checkpoint.last")).findAny().get();
-            Jigawatts.restoreTheWorld("./target/tmp"  + lastCheckpoint);
+            Path path = Path.of("./target/checkpoint.last");
+            if (path.toFile().exists())
+            {
+                String lastCheckpoint = Files.lines(path).findAny().get();
+                Jigawatts.restoreTheWorld("./target/tmp"  + lastCheckpoint);
+            }
         } catch (IOException e) {
             throw new UncheckedIOException(e);
         }
