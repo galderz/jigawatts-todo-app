@@ -60,9 +60,9 @@ public class TodoResource
     @POST
     public Response create(Todo item)
     {
-        System.out.println("Create: " + item);
+        Log.log("Create: " + item);
         final Todo created = todoService.create(item);
-        System.out.println("Create return: " + created);
+        Log.log("Create return: " + created);
         return Response.status(Status.CREATED).entity(created).build();
     }
 
@@ -85,7 +85,7 @@ public class TodoResource
     @Path("/{id}")
     public Response deleteOne(@PathParam("id") Long id)
     {
-        System.out.println("Delete " + id);
+        Log.log("Delete " + id);
         todoService.delete(id);
         return Response.noContent().build();
     }
