@@ -19,8 +19,15 @@ sources += $(shell find ./ -type f -name '*.html' | sed 's: :\\ :g')
 sources += $(shell find ./ -type f -name '*.js' | sed 's: :\\ :g')
 
 run: $(jar)
-> sudo java -jar $<
+#> sudo java -jar $<
+# Workaround hsperfdata_root error https://gist.github.com/galderz/46c17b4a87210496df2b8824789420cc
+#> sudo java -XX:-UsePerfData -jar $<
+> sudo java -XX:+UseSerialGC -XX:-UsePerfData -jar $<
 .PHONY: run
+
+run2: $(jar)
+> sudo java -Dquarkus.http.port=8081 -jar $<
+.PHONY: run2
 
 $(jar): $(sources)
 > $(mvn) package -DskipTests
@@ -28,6 +35,10 @@ $(jar): $(sources)
 checkpoint:
 > curl -v -X POST http://localhost:8080/api/checkpoint
 .PHONY: checkpoint
+
+restore:
+> curl -v -X POST http://localhost:8081/api/restore
+.PHONY: restore
 
 dev:
 > $(mvn) -Dquarkus.http.host=0.0.0.0 quarkus:dev

@@ -106,4 +106,17 @@ public class TodoResource
             throw new UncheckedIOException(e);
         }
     }
+
+    @POST
+    @Path("/restore")
+    public Response restore()
+    {
+        try {
+            String lastCheckpoint = Files.lines(Paths.get("./target/checkpoint.last")).findAny().get();
+            Jigawatts.restoreTheWorld("./target/tmp"  + lastCheckpoint);
+            return Response.ok().build();
+        } catch (IOException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
 }
