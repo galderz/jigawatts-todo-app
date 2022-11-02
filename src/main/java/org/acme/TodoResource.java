@@ -94,29 +94,15 @@ public class TodoResource
     @Path("/checkpoint")
     public Response checkpoint()
     {
-        try
-        {
-            long lastCheckpoint = System.currentTimeMillis();
-            Files.write(Paths.get("./target/checkpoint.last"), List.of(String.valueOf(lastCheckpoint)), StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-            Jigawatts.saveTheWorld("./target/tmp"  + lastCheckpoint);
-            return Response.ok().build();
-        }
-        catch (IOException e)
-        {
-            throw new UncheckedIOException(e);
-        }
+        new JigawattsService(null).checkpoint();
+        return Response.ok().build();
     }
 
     @POST
     @Path("/restore")
     public Response restore()
     {
-        try {
-            String lastCheckpoint = Files.lines(Paths.get("./target/checkpoint.last")).findAny().get();
-            Jigawatts.restoreTheWorld("./target/tmp"  + lastCheckpoint);
-            return Response.ok().build();
-        } catch (IOException e) {
-            throw new UncheckedIOException(e);
-        }
+        new JigawattsService(null).restore();
+        return Response.ok().build();
     }
 }

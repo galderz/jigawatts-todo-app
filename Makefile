@@ -10,7 +10,17 @@ ifeq ($(origin .RECIPEPREFIX), undefined)
 endif
 .RECIPEPREFIX = >
 
-jar = target/quarkus-app/quarkus-run.jar
+btm_jar = /opt/byteman/byteman/target/byteman-4.0.18.jar
+btm_print = echo '$(1)'
+btm_comma := ,
+btm_script = $(btm_comma)script:src/main/resources/jigawatts.btm$(btm_comma)$(btm_sysjar_helper)$(btm_comma)$(btm_sysjar_jigawatts)
+btm_sysjar_helper := sys:target/jigawatts-todo-1.0.0-SNAPSHOT.jar
+btm_sysjar_jigawatts := sys:target/quarkus-app/lib/main/com.redhat.jigawatts-1.0-SNAPSHOT.jar
+
+jar := target/quarkus-app/quarkus-run.jar
+jvm_opts += -javaagent:$(btm_jar)=boot:$(btm_jar)$(btm_script)
+jvm_opts += -XX:+UseSerialGC
+jvm_opts += -XX:-UsePerfData
 mvn += JAVA_HOME=/opt/java-17
 mvn += /opt/maven/bin/mvn
 sources += $(shell find ./ -type f -name '*.java' | sed 's: :\\ :g')
@@ -18,11 +28,15 @@ sources += $(shell find ./ -type f -name 'pom.xml' | sed 's: :\\ :g')
 sources += $(shell find ./ -type f -name '*.html' | sed 's: :\\ :g')
 sources += $(shell find ./ -type f -name '*.js' | sed 's: :\\ :g')
 
+ifdef VERBOSE
+  jvm_opts += -Dorg.jboss.byteman.verbose=true
+endif
+
 run: $(jar)
 #> sudo java -jar $<
 # Workaround hsperfdata_root error https://gist.github.com/galderz/46c17b4a87210496df2b8824789420cc
 #> sudo java -XX:-UsePerfData -jar $<
-> sudo java -XX:+UseSerialGC -XX:-UsePerfData -jar $<
+> sudo java $(jvm_opts) -jar $<
 .PHONY: run
 
 run2: $(jar)

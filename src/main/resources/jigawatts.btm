@@ -1,0 +1,19 @@
+RULE trace deleteCompleted exit
+CLASS org.acme.Todo
+METHOD withId
+AT ENTRY
+IF true
+DO traceln("Todo.withId");
+ENDRULE
+
+RULE checkpoint
+CLASS io.quarkus.bootstrap.runner.Timing
+METHOD printStopTime
+HELPER org.acme.JigawattsService
+AT EXIT
+IF true
+DO
+  traceln("Checkpoint entry");
+  checkpoint();
+  traceln("Checkpoint exit");
+ENDRULE
