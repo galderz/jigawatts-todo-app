@@ -50,3 +50,14 @@ DO
   traceln("Restore::exit");
 ENDRULE
 
+#RULE restore
+#CLASS io.quarkus.bootstrap.runner.Timing
+#METHOD printStartupTime
+#AT ENTRY
+#IF true
+#DO
+#  traceln("Restore::entry");
+#  traceStack();
+#  traceln(io.quarkus.bootstrap.runner.Timing.class.getClassLoader().toString());
+#  traceln("Restore::exit");
+#ENDRULE
