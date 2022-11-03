@@ -23,8 +23,8 @@ mvn += JAVA_HOME=/opt/java-17
 mvn += /opt/maven/bin/mvn
 sources += $(shell find ./ -type f -name '*.java' | sed 's: :\\ :g')
 sources += $(shell find ./ -type f -name 'pom.xml' | sed 's: :\\ :g')
-sources += $(shell find ./ -type f -name '*.html' | sed 's: :\\ :g')
-sources += $(shell find ./ -type f -name '*.js' | sed 's: :\\ :g')
+sources += $(shell find ./ -type f -name '*.properties' | sed 's: :\\ :g')
+sources += $(shell find ./ -type f -name '*.btm' | sed 's: :\\ :g')
 
 ifdef DEBUG
   jvm_opts += -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:4004
