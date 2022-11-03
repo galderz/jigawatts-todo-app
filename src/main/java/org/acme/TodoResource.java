@@ -94,7 +94,7 @@ public class TodoResource
     @Path("/checkpoint")
     public Response checkpoint()
     {
-        new JigawattsService(null).checkpoint();
+        // new JigawattsService(null).checkpoint();
         return Response.ok().build();
     }
 
@@ -102,7 +102,7 @@ public class TodoResource
     @Path("/restore")
     public Response restore()
     {
-        new JigawattsService(null).restore();
+        // new JigawattsService(null).restore();
         return Response.ok().build();
     }
 }

@@ -13,9 +13,7 @@ endif
 btm_jar = /opt/byteman/byteman/target/byteman-4.0.18.jar
 btm_print = echo '$(1)'
 btm_comma := ,
-btm_script = $(btm_comma)script:src/main/resources/jigawatts.btm$(btm_comma)$(btm_sysjar_helper)$(btm_comma)$(btm_sysjar_jigawatts)$(btm_comma)listener:true
-btm_sysjar_helper := sys:target/jigawatts-todo-1.0.0-SNAPSHOT.jar
-btm_sysjar_jigawatts := sys:target/quarkus-app/lib/main/com.redhat.jigawatts-1.0-SNAPSHOT.jar
+btm_script = $(btm_comma)script:src/main/resources/jigawatts.btm$(btm_comma)listener:true
 
 jar := target/quarkus-app/quarkus-run.jar
 jvm_opts += -javaagent:$(btm_jar)=boot:$(btm_jar)$(btm_script)
