@@ -13,7 +13,7 @@ endif
 btm_jar = /opt/byteman/byteman/target/byteman-4.0.18.jar
 btm_print = echo '$(1)'
 btm_comma := ,
-btm_script = $(btm_comma)script:src/main/resources/jigawatts.btm$(btm_comma)$(btm_sysjar_helper)$(btm_comma)$(btm_sysjar_jigawatts)
+btm_script = $(btm_comma)script:src/main/resources/jigawatts.btm$(btm_comma)$(btm_sysjar_helper)$(btm_comma)$(btm_sysjar_jigawatts)$(btm_comma)listener:true
 btm_sysjar_helper := sys:target/jigawatts-todo-1.0.0-SNAPSHOT.jar
 btm_sysjar_jigawatts := sys:target/quarkus-app/lib/main/com.redhat.jigawatts-1.0-SNAPSHOT.jar
 
@@ -27,6 +27,10 @@ sources += $(shell find ./ -type f -name '*.java' | sed 's: :\\ :g')
 sources += $(shell find ./ -type f -name 'pom.xml' | sed 's: :\\ :g')
 sources += $(shell find ./ -type f -name '*.html' | sed 's: :\\ :g')
 sources += $(shell find ./ -type f -name '*.js' | sed 's: :\\ :g')
+
+ifdef DEBUG
+  jvm_opts += -agentlib:jdwp=transport=dt_socket,server=y,suspend=y,address=*:4004
+endif
 
 ifdef VERBOSE
   jvm_opts += -Dorg.jboss.byteman.verbose=true

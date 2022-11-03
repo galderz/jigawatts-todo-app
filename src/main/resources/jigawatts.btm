@@ -1,29 +1,8 @@
-RULE trace deleteCompleted exit
-CLASS org.acme.Todo
-METHOD withId
-AT ENTRY
-IF true
-DO traceln("Todo.withId");
-ENDRULE
-
-RULE checkpoint
-CLASS io.quarkus.bootstrap.runner.Timing
-METHOD printStopTime
-HELPER org.acme.JigawattsService
-AT EXIT
-IF true
-DO
-  traceln("Checkpoint::entry");
-  traceStack();
-  # checkpoint();
-  traceln("Checkpoint::exit");
-ENDRULE
-
 #RULE checkpoint
-#CLASS io.quarkus.runtime.ApplicationLifecycleManager$ShutdownHookThread
-#METHOD run
+#CLASS io.quarkus.bootstrap.runner.Timing
+#METHOD printStopTime
 #HELPER org.acme.JigawattsService
-#AT ENTRY
+#AT EXIT
 #IF true
 #DO
 #  traceln("Checkpoint::entry");
@@ -31,6 +10,19 @@ ENDRULE
 #  # checkpoint();
 #  traceln("Checkpoint::exit");
 #ENDRULE
+
+RULE checkpoint
+CLASS io.quarkus.runtime.ApplicationLifecycleManager$ShutdownHookThread
+METHOD run
+#HELPER org.acme.JigawattsService
+AT ENTRY
+IF true
+DO
+  traceln("Checkpoint::entry");
+  # traceStack();
+  # checkpoint();
+  # traceln("Checkpoint::exit");
+ENDRULE
 
 #RULE restore
 #CLASS io.quarkus.bootstrap.runner.Timing
