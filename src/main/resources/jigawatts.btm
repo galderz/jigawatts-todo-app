@@ -1,38 +1,16 @@
+# Checkpoint cannot happen on shutdown.
+# Otherwise when restore happens, the shutdown process will complete and end the instance.
+# So right now it's better to explicitly request a checkpoint via the API.
 #RULE checkpoint
-#CLASS io.quarkus.bootstrap.runner.Timing
-#METHOD printStopTime
-#HELPER org.acme.JigawattsService
-#AT EXIT
-#IF true
-#DO
-#  traceln("Checkpoint::entry");
-#  traceStack();
-#  # checkpoint();
-#  traceln("Checkpoint::exit");
-#ENDRULE
-
-RULE checkpoint
-CLASS io.quarkus.runtime.ApplicationLifecycleManager$ShutdownHookThread
-METHOD run
-#HELPER org.acme.JigawattsService
-AT ENTRY
-IF true
-DO
-  traceln("Checkpoint::entry");
-  # traceStack();
-  # checkpoint();
-  # traceln("Checkpoint::exit");
-ENDRULE
-
-#RULE restore
-#CLASS io.quarkus.bootstrap.runner.Timing
-#METHOD printStartupTime
+#CLASS io.quarkus.runtime.ApplicationLifecycleManager$ShutdownHookThread
+#METHOD run
 #HELPER org.acme.JigawattsService
 #AT ENTRY
 #IF true
 #DO
-#  traceln("Quarkus entry");
-#  traceStack();
+#  traceln("Checkpoint::entry");
+#  checkpoint();
+#  traceln("Checkpoint::exit");
 #ENDRULE
 
 RULE restore
