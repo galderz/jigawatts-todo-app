@@ -1,22 +1,52 @@
 RULE checkpoint
 CLASS io.quarkus.runtime.ApplicationLifecycleManager$ShutdownHookThread
 METHOD run
-#HELPER org.acme.JigawattsService
 AT ENTRY
+BIND
+  lastCheckpoint = System.currentTimeMillis();
 IF true
 DO
   traceln("Checkpoint::entry");
-  traceStack();
-  # checkpoint();
+
+  java.nio.file.Files.write(
+    java.nio.file.Path.of("./target/checkpoint.last", new String[]{})
+    , java.util.List.of(String.valueOf(lastCheckpoint))
+    , java.nio.charset.StandardCharsets.UTF_8
+    , new OpenOption[] {
+        java.nio.file.StandardOpenOption.CREATE
+        , java.nio.file.StandardOpenOption.TRUNCATE_EXISTING
+    }
+  );
+  com.redhat.jigawatts.Jigawatts.saveTheWorld("./target/tmp"  + lastCheckpoint);
+
   traceln("Checkpoint::exit");
 ENDRULE
 
-RULE restore
+RULE restore an existing checkpoint
 CLASS io.quarkus.bootstrap.runner.QuarkusEntryPoint
 METHOD main
 AT ENTRY
-IF true
+BIND
+  path = java.nio.file.Path.of("./target/checkpoint.last", new String[]{});
+IF
+  path.toFile().exists()
 DO
   traceln("Restore::entry");
+  com.redhat.jigawatts.Jigawatts.restoreTheWorld("./target/tmp" + java.nio.file.Files.lines(path).findAny().get());
   traceln("Restore::exit");
 ENDRULE
+
+RULE restore checkpoint does not exist
+CLASS io.quarkus.bootstrap.runner.QuarkusEntryPoint
+METHOD main
+AT ENTRY
+BIND
+  path = java.nio.file.Path.of("./target/checkpoint.last", new String[]{});
+IF
+  !path.toFile().exists()
+DO
+  traceln("Restore::entry");
+  traceln("Nothing to restore");
+  traceln("Restore::exit");
+ENDRULE
+
