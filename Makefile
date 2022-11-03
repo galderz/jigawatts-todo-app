@@ -34,6 +34,8 @@ endif
 
 ifdef VERBOSE
   jvm_opts += -Dorg.jboss.byteman.verbose=true
+  jvm_opts += -Dquarkus.log.level=TRACE
+  mvn += -X
 endif
 
 run: $(jar)
