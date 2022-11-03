@@ -24,7 +24,7 @@ public class JigawattsService extends Helper
         try
         {
             long lastCheckpoint = System.currentTimeMillis();
-            Files.write(Paths.get("./target/checkpoint.last"), List.of(String.valueOf(lastCheckpoint)), StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
+            Files.write(Path.of("./target/checkpoint.last"), List.of(String.valueOf(lastCheckpoint)), StandardCharsets.UTF_8, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
             Jigawatts.saveTheWorld("./target/tmp"  + lastCheckpoint);
         }
         catch (IOException e)
